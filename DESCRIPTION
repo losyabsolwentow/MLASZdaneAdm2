@@ -1,23 +1,24 @@
-Package: MLASZdaneAdm1
+Package: MLASZdaneAdm2
 Type: Package
 Title: Pakiet zawierający funkcje potrzebne do obliczania zbioru wskaźników w
     projekcie MLASZ - dla 1. edycji monitoringu z użyciem danych rejestrowych
 Version: 0.1.0
-Authors@R: person("Bartłomiej", "Płatkowski", email = "b.platkowski@ibe.edu.pl", role = c("cre", "aut"))
+Authors@R: c(person("Bartłomiej", "Płatkowski", email = "b.platkowski@ibe.edu.pl", role = c("cre", "aut")),
+             person("Tomasz", "Żółtak", email = "tomek@zozlak.org", role = "ctb"))
 Description: Pakiet zawiera funkcje potrzebne do obliczania wskaźników
-    zagregowanych dla 1. edycji monitoringu z użyciem danych rejestrowych.
+    zagregowanych dla 2. edycji monitoringu z użyciem danych rejestrowych.
     Użycie tych funkcji w celu obliczania wskaźników wymaga użycia pakietu
     MLASZdane zawierającego silnik agregacji.
 License: MIT + file LICENSE
 Depends:
-    R (>= 4.0.3),
+    R (>= 4.2.1),
     MLASZdane (>= 0.4.1)
 Imports:
-    rlang (>= 0.4.12),
-    tidyr (>= 1.1.2),
-    dplyr (>= 1.0.7),
-    haven (>= 2.4.3)
-Remotes: bartplat/MLASZdane
+    rlang (>= 1.0.4),
+    tidyr (>= 1.2.0),
+    dplyr (>= 1.0.9),
+    haven (>= 2.5.1)
+Remotes: losyabsolwentow/MLASZdane
 Suggests:
     knitr,
     rmarkdown
@@ -25,4 +26,4 @@ LazyData: TRUE
 Encoding: UTF-8
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
