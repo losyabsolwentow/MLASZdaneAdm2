@@ -267,31 +267,24 @@ liczebnosc_branze_kont = function(x, branza_kont_df, rok, mies = 12) {
             mies %in% c(1:12))
   
   if (any(unique(x$typ_szk) %in% "Branżowa szkoła I stopnia")) {
-    branza_kont_df = branza_kont_df %>%
-      filter(.data$okres_kont %in% data_na_okres(mies, rok))
+    x = x %>%
+      filter(.data$okres %in% data_na_okres(mies, rok)) %>% 
+      left_join(branza_kont_df %>% 
+                  select(id_abs, rok_abs, branza_kont)) %>%
+      filter(.data$nauka_bs2st %in% 1,
+             !(is.na(.data$branza_kont)))
     
-    if (nrow(branza_kont_df) %in% 0) {
+    n_dist = n_distinct(x$id_abs)
+    
+    tab = x %>%
+      count(.data$branza_kont) %>%
+      mutate(odsetek = .data$n / n_dist) %>%
+      filter(n >= 10) %>% 
+      slice_max(n = 10, order_by = .data$n)
+    if (nrow(tab) %in% 0) {
       return(list())
     } else {
-      x = x %>%
-        filter(.data$okres %in% data_na_okres(mies, rok)) %>% 
-        left_join(branza_kont_df %>% 
-                    select(id_abs, rok_abs, branza_kont)) %>%
-        filter(.data$nauka_bs2st %in% 1,
-               !(is.na(.data$branza_kont)))
-      
-      n_dist = n_distinct(x$id_abs)
-      
-      tab = x %>%
-        count(.data$branza_kont) %>%
-        mutate(odsetek = .data$n / n_dist) %>%
-        filter(n >= 10) %>% 
-        slice_max(n = 10, order_by = .data$n)
-      if (nrow(tab) %in% 0) {
-        return(list())
-      } else {
-        return(as.list(tab))
-      }
+      return(as.list(tab))
     }
   } else {
     return(list())
@@ -807,7 +800,7 @@ licz_zawody = function(x) {
 #' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
 #' @description Funkcja licząca rozkład liczebności absolwentów kontynuujących
 #' naukę na studiach w podziale na dziedziny. Funkcja liczy wskaźnik tylko dla
-#' absolwentów techników.
+#' absolwentów techników i liceów ogólnokształcących.
 #' @param x ramka danych pośrednich P3
 #' @param dziedzina_kont_df ramka danych zawierająca informację o kontynuowaniu
 #' kształcenia w danej dziedzinie (tabela danych pośrednich P2 lub zawierająca
@@ -828,7 +821,6 @@ liczebnosc_dziedziny = function(x, dziedzina_kont_df, rok, mies = 12) {
   if (any(unique(x$typ_szk) %in% c("Technikum", "Liceum ogólnokształcące"))) {
     
     dziedzina_kont_df = dziedzina_kont_df %>%
-      filter(.data$okres_kont %in% data_na_okres(mies, rok)) %>% 
       select(id_abs, rok_abs, dziedzina_kont)
     
     x = x %>%
@@ -860,8 +852,8 @@ liczebnosc_dziedziny = function(x, dziedzina_kont_df, rok, mies = 12) {
 }
 #' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
 #' @description Funkcja licząca rozkład liczebności absolwentów kontynuujących
-#' naukę na studiach w podziale na dyscypliny Funkcja liczy wskaźnik tylko dla
-#' absolwentów techników.
+#' naukę na studiach w podziale na dyscypliny. Funkcja liczy wskaźnik tylko dla
+#' absolwentów techników i liceów ogólnokształcących.
 #' @param x ramka danych pośrednich P3
 #' @param dyscyplina_kont_df ramka danych zawierająca informację o kontynuowaniu
 #' kształcenia w danej dyscyplinie (tabela danych pośrednich P2 lub zawierająca
@@ -882,7 +874,6 @@ liczebnosc_dyscypliny = function(x, dyscyplina_kont_df, rok, mies = 12) {
   if (any(unique(x$typ_szk) %in% c("Technikum", "Liceum ogólnokształcące"))) {
     
     dyscyplina_kont_df = dyscyplina_kont_df %>%
-      filter(.data$okres_kont %in% data_na_okres(mies, rok)) %>% 
       select(id_abs, rok_abs, dyscyplina_wiodaca_kont)
     
     x = x %>%
@@ -904,6 +895,73 @@ liczebnosc_dyscypliny = function(x, dyscyplina_kont_df, rok, mies = 12) {
         return(list())
       } else {
         tab %>%
+          as.list() %>%
+          return()
+      }
+    }
+  } else {
+    return(list())
+  }
+}
+#' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
+#' @description Funkcja licząca rozkład liczebności absolwentów kontynuujących
+#' naukę na studiach w podziale na dyscypliny i zawody - wynik działania funkcji
+#' jest wsadem do tabeli krzyżowej dyscypliny przez zawody w raporcie. Funkcja
+#' liczy wskaźnik tylko dla absolwentów techników i liceów ogólnokształcących.
+#' Wskaźnik liczony jest tylko dla zawodów, w których uczyło się więcej niż 10
+#' absolwentów (n>=10).
+#' @param x ramka danych pośrednich P3
+#' @param dyscyplina_kont_df ramka danych zawierająca informację o kontynuowaniu
+#' kształcenia w danej dyscyplinie (tabela danych pośrednich P2 lub zawierająca
+#' analogiczne informacje oraz te same nazwy kolumn co tabela P2)
+#' @param rok rok lub zakres lat osiągnięcia statusu absolwenta
+#' @param mies miesiąc, dla którego ma być policzony wskaźnik - domyślnie
+#' grudzień
+#' @return lista
+#' @importFrom dplyr %>% filter .data select left_join count mutate group_by
+#' ungroup rowwise across cur_column
+#' @importFrom tidyr pivot_wider
+#' @export
+dyscypliny_zawody = function(x, dyscyplina_kont_df, rok, mies = 12) {
+  stopifnot(is.data.frame(x),
+            is.data.frame(dyscyplina_kont_df),
+            rok %in% c(2020, 2021),
+            mies %in% c(1:12))
+  
+  if (any(unique(x$typ_szk) %in% c("Technikum", "Liceum ogólnokształcące"))) {
+    
+    dyscyplina_kont_df = dyscyplina_kont_df %>%
+      select(id_abs, dyscyplina_wiodaca_kont)
+    
+    x = x %>%
+      filter(.data$okres %in% data_na_okres(mies, rok)) %>%
+      left_join(dyscyplina_kont_df,
+                by = c("id_abs")) %>%
+      filter(.data$nauka_studia %in% 1) %>%
+      filter(!(is.na(.data$dyscyplina_wiodaca_kont)))
+    
+    if (nrow(x) %in% 0) {
+      return(list())
+    } else {
+      nki = x %>% 
+        count(.data$nazwa_zaw) %>% 
+        filter(n >= 10) %>% 
+        as.list()
+      
+      tab = x %>%
+        filter(.data$nazwa_zaw %in% unique(nki$nazwa_zaw)) %>% 
+        group_by(.data$dyscyplina_wiodaca_kont) %>%
+        count(.data$nazwa_zaw) %>% 
+        ungroup()
+      if (nrow(tab) %in% 0) {
+        return(list())
+      } else {
+        tab %>%
+          pivot_wider(names_from = nazwa_zaw, values_from = n, values_fill = 0) %>% 
+          rowwise() %>% 
+          mutate(across(2:ncol(.),
+                        ~sum(.) / nki$n[nki$nazwa_zaw %in% cur_column()])) %>% 
+          ungroup() %>% 
           as.list() %>%
           return()
       }

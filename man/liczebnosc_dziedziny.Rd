@@ -24,5 +24,5 @@ lista
 \description{
 Funkcja licząca rozkład liczebności absolwentów kontynuujących
 naukę na studiach w podziale na dziedziny. Funkcja liczy wskaźnik tylko dla
-absolwentów techników.
+absolwentów techników i liceów ogólnokształcących.
 }

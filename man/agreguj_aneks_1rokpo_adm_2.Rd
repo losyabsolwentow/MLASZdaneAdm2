@@ -5,12 +5,9 @@
 \title{Obliczanie wskaznikow na poziomie zagregowanym dla 2. edycji
 monitoringu na danych administracyjnych}
 \usage{
-agreguj_aneks_1rokpo_adm_2(wsk2, wsk3, wsk4, grupy, rok, duplikaty = TRUE)
+agreguj_aneks_1rokpo_adm_2(wsk3, wsk4, grupy, rok, duplikaty = TRUE)
 }
 \arguments{
-\item{wsk2}{ramka danych z tabeli pośredniej nr 2 (P2) z wynikami z 2.
-rundy monitoringu na danych administracyjnych}
-
 \item{wsk3}{ramka danych z tabeli pośredniej nr 3 (P3) z wynikami z 2.
 rundy monitoringu na danych administracyjnych}
 
@@ -29,6 +26,9 @@ zbioru duplikaty przy liczeniu niektórych wskaźników. Przyjmuje wartości:
 \item{TRUE}{wartość domyślna; duplikaty nie zostaną odfiltrowane ze zbioru}
 \item{FALSE}{duplikaty zostaną odfiltrowane ze zbioru}
 }}
+
+\item{wsk2}{ramka danych z tabeli pośredniej nr 2 (P2) z wynikami z 2.
+rundy monitoringu na danych administracyjnych}
 }
 \value{
 data frame
@@ -47,15 +47,12 @@ używane do obliczania konkretnych wskaźników zagregowanych:
 \item{\code{\link{S3_mies}},}
 \item{\code{\link{zawody_S3}},}
 \item{\code{\link{E2_nauka_kontyn}},}
-\item{\code{\link{liczebnosc_branze_kont}},}
 \item{\code{\link{Z4_ods_prac_mies}},}
 \item{\code{\link{Z8_formy_prac_mies}},}
 \item{\code{\link{Z9_kont_mlod}},}
 \item{\code{\link{W3_sr_doch_uop}},}
 \item{\code{\link{B2_ods_bezrob}},}
 \item{\code{\link{N2_ods_biernosc}},}
-\item{\code{\link{licz_zawody}},}
-\item{\code{\link{liczebnosc_dyscypliny}},}
-\item{\code{\link{liczebnosc_dziedziny}}}
+\item{\code{\link{licz_zawody}}}
 }
 }

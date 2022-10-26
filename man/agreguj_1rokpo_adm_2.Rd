@@ -58,6 +58,7 @@ używane do obliczania konkretnych wskaźników zagregowanych:
 \item{\code{\link{N2_ods_biernosc}},}
 \item{\code{\link{licz_zawody}},}
 \item{\code{\link{liczebnosc_dyscypliny}},}
-\item{\code{\link{liczebnosc_dziedziny}}}
+\item{\code{\link{liczebnosc_dziedziny}},}
+\item{\code{\link{dyscypliny_zawody}}}
 }
 }
