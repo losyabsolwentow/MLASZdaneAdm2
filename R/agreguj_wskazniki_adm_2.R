@@ -208,3 +208,78 @@ agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok, duplikaty = TRUE) 
   wskazniki = list(grupy = wskazniki_4$grupy, grupyOdniesienia = wskazniki_4$grupyOdniesienia)
   return(wskazniki)
 }
+#' @title Obliczanie wskaznikow na poziomie zagregowanym dla 2. edycji
+#' monitoringu na danych administracyjnych
+#' @description Funkcja obliczająca wskaźniki na poziomie zagregowanym na
+#' potrzeby tabeli prezentującej wskaźnik S3 w podziale na zawody w raportach
+#' "1rokpo" - liczy mniej wskaźników niż \code{\link{agreguj_1rokpo_adm_2}}
+#' @param wsk3 ramka danych z tabeli pośredniej nr 3 (P3) z wynikami z 2.
+#' rundy monitoringu na danych administracyjnych
+#' @param wsk4 ramka danych z tabeli pośredniej nr 4 (P4) z wynikami z 2.
+#' rundy monitoringu na danych administracyjnych
+#' @param grupy ramka danych zawierająca definicje podziałów na grupy -
+#' np. zwrócona przez funkcję \code{\link{utworz_grupowanie_ze_zmiennej}}
+#' @param rok rok, w którym grupa absolwentów uzyskała status absolwenta. Może
+#' to być więcej niż 1 wartość.
+#' @param duplikaty wartość logiczna określająca czy należy odfiltrować ze
+#' zbioru duplikaty przy liczeniu niektórych wskaźników. Przyjmuje wartości:
+#' \itemize{
+#'  \item{TRUE}{wartość domyślna; duplikaty nie zostaną odfiltrowane ze zbioru}
+#'  \item{FALSE}{duplikaty zostaną odfiltrowane ze zbioru}
+#' }
+#' @return data frame
+#' @seealso \code{\link{agreguj_wskazniki}} oraz przekazywane do niej funkcje
+#' używane do obliczania konkretnych wskaźników zagregowanych:
+#' \itemize{
+#'  \item{\code{\link{l_abs}},}
+#'  \item{\code{\link{S3_mies}},}
+#'  \item{\code{\link{zawody_S3}},}
+#'  \item{\code{\link{licz_zawody}}}
+#' }
+#' @export
+#' @importFrom dplyr %>% filter .data left_join
+agreguj_szkozaw_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok, duplikaty = TRUE) {
+  stopifnot(is.data.frame(wsk3),
+            is.data.frame(wsk4),
+            is.data.frame(grupy),
+            rok %in% c(2020, 2021) & length(rok) %in% 1,
+            c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj") %in% names(wsk3),
+            c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj") %in% names(wsk4),
+            is.logical(duplikaty))
+  
+  wsk4 = wsk4 %>%
+    filter(.data$rok_abs %in% (rok))
+  wsk3 = wsk3 %>%
+    filter(.data$rok_abs %in% (rok))
+  
+  if (duplikaty) {
+    dup = NULL
+  } else {
+    dup = wsk4 %>% 
+      count(.data$id_abs, .data$rok_abs) %>% 
+      filter(n > 1) %>% 
+      pull(id_abs)
+  }
+  
+  wskazniki_4 = agreguj_wskazniki(
+    wsk4, grupy,
+    l_abs = l_abs(.data),
+    licz_zawody = licz_zawody(.data))
+  
+  wskazniki_3 = agreguj_wskazniki(
+    wsk3, grupy, list("rok" = rok, "dup" = dup),
+    S3_12 = S3_mies(.data, min(rok), 12, max(rok), 12, dup),
+    tab_s3_zaw = zawody_S3(.data, min(rok), 12, max(rok), 12, dup)
+  )
+  
+  wskazniki_4$grupy = wskazniki_4$grupy %>%
+    left_join(wskazniki_3$grupy, by = names(grupy))
+  wskazniki_4$grupyOdniesienia = wskazniki_4$grupyOdniesienia %>%
+    left_join(wskazniki_3$grupyOdniesienia, by = names(grupy))
+  
+  wskazniki = list(grupy = wskazniki_4$grupy, grupyOdniesienia = wskazniki_4$grupyOdniesienia)
+  return(wskazniki)
+}
+
+
+
