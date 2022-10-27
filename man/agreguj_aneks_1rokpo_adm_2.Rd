@@ -26,9 +26,6 @@ zbioru duplikaty przy liczeniu niektórych wskaźników. Przyjmuje wartości:
 \item{TRUE}{wartość domyślna; duplikaty nie zostaną odfiltrowane ze zbioru}
 \item{FALSE}{duplikaty zostaną odfiltrowane ze zbioru}
 }}
-
-\item{wsk2}{ramka danych z tabeli pośredniej nr 2 (P2) z wynikami z 2.
-rundy monitoringu na danych administracyjnych}
 }
 \value{
 data frame

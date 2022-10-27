@@ -123,8 +123,6 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, grupy, rok, duplikaty = TRUE) 
 #' @description Funkcja obliczająca wskaźniki na poziomie zagregowanym na
 #' potrzeby Aneksu w raportach "1rokpo" - liczy mniej wskaźników niż
 #' \code{\link{agreguj_1rokpo_adm_2}}
-#' @param wsk2 ramka danych z tabeli pośredniej nr 2 (P2) z wynikami z 2.
-#' rundy monitoringu na danych administracyjnych
 #' @param wsk3 ramka danych z tabeli pośredniej nr 3 (P3) z wynikami z 2.
 #' rundy monitoringu na danych administracyjnych
 #' @param wsk4 ramka danych z tabeli pośredniej nr 4 (P4) z wynikami z 2.
