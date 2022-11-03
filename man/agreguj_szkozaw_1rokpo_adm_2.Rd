@@ -5,7 +5,7 @@
 \title{Obliczanie wskaznikow na poziomie zagregowanym dla 2. edycji
 monitoringu na danych administracyjnych}
 \usage{
-agreguj_szkozaw_1rokpo_adm_2(wsk3, wsk4, grupy, rok, duplikaty = TRUE)
+agreguj_szkozaw_1rokpo_adm_2(wsk3, wsk4, grupy, rok_abso, duplikaty = TRUE)
 }
 \arguments{
 \item{wsk3}{ramka danych z tabeli pośredniej nr 3 (P3) z wynikami z 2.
@@ -17,8 +17,8 @@ rundy monitoringu na danych administracyjnych}
 \item{grupy}{ramka danych zawierająca definicje podziałów na grupy -
 np. zwrócona przez funkcję \code{\link{utworz_grupowanie_ze_zmiennej}}}
 
-\item{rok}{rok, w którym grupa absolwentów uzyskała status absolwenta. Może
-to być więcej niż 1 wartość.}
+\item{rok_abso}{rok, w którym grupa absolwentów uzyskała status absolwenta.
+Może to być więcej niż 1 wartość.}
 
 \item{duplikaty}{wartość logiczna określająca czy należy odfiltrować ze
 zbioru duplikaty przy liczeniu niektórych wskaźników. Przyjmuje wartości:
