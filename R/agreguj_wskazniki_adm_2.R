@@ -63,9 +63,9 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, grupy, rok, duplikaty = TRUE) 
     filter(.data$rok_abs %in% (rok))
   
   if (duplikaty) {
-    dup = NULL
+    dups = NULL
   } else {
-    dup = wsk4 %>% 
+    dups = wsk4 %>% 
       count(.data$id_abs, .data$rok_abs) %>% 
       filter(n > 1) %>% 
       pull(id_abs)
@@ -80,20 +80,20 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, grupy, rok, duplikaty = TRUE) 
     liczebnosc_branze_ucz = liczebnosc_branze_ucz(.data))
   
   wskazniki_3 = agreguj_wskazniki(
-    wsk3, grupy, list("rok" = rok, "wsk2" = wsk2, "dup" = dup),
-    S3_01 = S3_mies(.data, min(rok), 1, max(rok), 1, dup),
-    S3_02 = S3_mies(.data, min(rok), 2, max(rok), 2, dup),
-    S3_03 = S3_mies(.data, min(rok), 3, max(rok), 3, dup),
-    S3_04 = S3_mies(.data, min(rok), 4, max(rok), 4, dup),
-    S3_05 = S3_mies(.data, min(rok), 5, max(rok), 5, dup),
-    S3_06 = S3_mies(.data, min(rok), 6, max(rok), 6, dup),
-    S3_07 = S3_mies(.data, min(rok), 7, max(rok), 7, dup),
-    S3_08 = S3_mies(.data, min(rok), 8, max(rok), 8, dup),
-    S3_09 = S3_mies(.data, min(rok), 9, max(rok), 9, dup),
-    S3_10 = S3_mies(.data, min(rok), 10, max(rok), 10, dup),
-    S3_11 = S3_mies(.data, min(rok), 11, max(rok), 11, dup),
-    S3_12 = S3_mies(.data, min(rok), 12, max(rok), 12, dup),
-    tab_s3_zaw = zawody_S3(.data, min(rok), 12, max(rok), 12, dup),
+    wsk3, grupy, list("rok" = rok, "wsk2" = wsk2, "dups" = dups),
+    S3_01 = S3_mies(.data, min(rok), 1, max(rok), 1, dups),
+    S3_02 = S3_mies(.data, min(rok), 2, max(rok), 2, dups),
+    S3_03 = S3_mies(.data, min(rok), 3, max(rok), 3, dups),
+    S3_04 = S3_mies(.data, min(rok), 4, max(rok), 4, dups),
+    S3_05 = S3_mies(.data, min(rok), 5, max(rok), 5, dups),
+    S3_06 = S3_mies(.data, min(rok), 6, max(rok), 6, dups),
+    S3_07 = S3_mies(.data, min(rok), 7, max(rok), 7, dups),
+    S3_08 = S3_mies(.data, min(rok), 8, max(rok), 8, dups),
+    S3_09 = S3_mies(.data, min(rok), 9, max(rok), 9, dups),
+    S3_10 = S3_mies(.data, min(rok), 10, max(rok), 10, dups),
+    S3_11 = S3_mies(.data, min(rok), 11, max(rok), 11, dups),
+    S3_12 = S3_mies(.data, min(rok), 12, max(rok), 12, dups),
+    tab_s3_zaw = zawody_S3(.data, min(rok), 12, max(rok), 12, dups),
     E2_nauka_kontyn = E2_nauka_kontyn(.data, rok, 12),
     Z4_ucz = Z4_ods_prac_mies(.data, min(rok), 9, max(rok), 12, TRUE),
     Z4_nie_ucz = Z4_ods_prac_mies(.data, min(rok), 9, max(rok), 12, FALSE),
@@ -171,9 +171,9 @@ agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok, duplikaty = TRUE) 
     filter(.data$rok_abs %in% (rok))
   
   if (duplikaty) {
-    dup = NULL
+    dups = NULL
   } else {
-    dup = wsk4 %>% 
+    dups = wsk4 %>% 
       count(.data$id_abs, .data$rok_abs) %>% 
       filter(n > 1) %>% 
       pull(id_abs)
@@ -185,9 +185,9 @@ agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok, duplikaty = TRUE) 
     l_kobiet = l_kobiet(.data))
   
   wskazniki_3 = agreguj_wskazniki(
-    wsk3, grupy, list("rok" = rok, "dup" = dup),
-    S3_12 = S3_mies(.data, min(rok), 12, max(rok), 12, dup),
-    tab_s3_zaw = zawody_S3(.data, min(rok), 12, max(rok), 12, dup),
+    wsk3, grupy, list("rok" = rok, "dups" = dups),
+    S3_12 = S3_mies(.data, min(rok), 12, max(rok), 12, dups),
+    tab_s3_zaw = zawody_S3(.data, min(rok), 12, max(rok), 12, dups),
     E2_nauka_kontyn = E2_nauka_kontyn(.data, rok, 12),
     Z4_ucz = Z4_ods_prac_mies(.data, min(rok), 9, max(rok), 12, TRUE),
     Z4_nie_ucz = Z4_ods_prac_mies(.data, min(rok), 9, max(rok), 12, FALSE),
@@ -253,9 +253,9 @@ agreguj_szkozaw_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok, duplikaty = TRUE
     filter(.data$rok_abs %in% (rok))
   
   if (duplikaty) {
-    dup = NULL
+    dups = NULL
   } else {
-    dup = wsk4 %>% 
+    dups = wsk4 %>% 
       count(.data$id_abs, .data$rok_abs) %>% 
       filter(n > 1) %>% 
       pull(id_abs)
@@ -267,9 +267,9 @@ agreguj_szkozaw_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok, duplikaty = TRUE
     licz_zawody = licz_zawody(.data))
   
   wskazniki_3 = agreguj_wskazniki(
-    wsk3, grupy, list("rok" = rok, "dup" = dup),
-    S3_12 = S3_mies(.data, min(rok), 12, max(rok), 12, dup),
-    tab_s3_zaw = zawody_S3(.data, min(rok), 12, max(rok), 12, dup)
+    wsk3, grupy, list("rok" = rok, "dups" = dups),
+    S3_12 = S3_mies(.data, min(rok), 12, max(rok), 12, dups),
+    tab_s3_zaw = zawody_S3(.data, min(rok), 12, max(rok), 12, dups)
   )
   
   wskazniki_4$grupy = wskazniki_4$grupy %>%
