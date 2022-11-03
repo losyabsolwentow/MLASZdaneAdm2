@@ -363,7 +363,7 @@ Z4_ods_prac_mies = function(x, rok_od, mies_od = 9, rok_do, mies_do = 12, nauka)
         srednia = mean(.data$ods_nucz_prac, na.rm = TRUE),
         med = median(.data$ods_nucz_prac, na.rm = TRUE),
         p0 = sum(.data$ods_nucz_prac %in% 0) / nka,
-        czesc = sum(.data$ods_ucz_prac > 0 & .data$ods_ucz_prac < 1) / nka,
+        czesc = sum(.data$ods_nucz_prac > 0 & .data$ods_nucz_prac < 1) / nka,
         p100 = sum(.data$ods_nucz_prac %in% 1) / nka) %>%
       as.list() %>%
       return()
