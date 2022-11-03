@@ -356,7 +356,7 @@ Z4_ods_prac_mies = function(x, rok_od, mies_od = 9, rok_do, mies_do = 12, nauka)
     nka = n_distinct(nucz$id_abs)
     
     nucz %>%
-      full_join(ucz_prac, by = "id_abs") %>%
+      full_join(nucz_prac, by = "id_abs") %>%
       mutate(ods_nucz_prac = ifelse(is.na(.data$l_mies_nucz_prac), 0, round(.data$l_mies_nucz_prac / .data$l_mies_nucz, 2))) %>%
       summarise(
         n = n_distinct(.data$id_abs),
