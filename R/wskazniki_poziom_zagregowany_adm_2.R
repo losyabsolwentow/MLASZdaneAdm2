@@ -788,21 +788,26 @@ N2_ods_biernosc = function(x, rok, od = 9, do = 12) {
 licz_zawody = function(x) {
   stopifnot(is.data.frame(x))
   
-  x = x %>%
-    filter(!(is.na(.data$nazwa_zaw)))
-  
-  if (nrow(x) %in% 0) {
-    return(list())
+  if (!any(unique(x$typ_szk) %in% "Liceum ogólnokształcące")) {
+    
+    x = x %>%
+      filter(!(is.na(.data$nazwa_zaw)))
+    
+    if (nrow(x) %in% 0) {
+      return(list())
+    } else {
+      n_dist = n_distinct(x$id_abs)
+      
+      tab = x %>%
+        count(.data$nazwa_zaw) %>%
+        mutate(odsetek = .data$n / n_dist)
+      
+      tab %>%
+        as.list() %>%
+        return()
+    }
   } else {
-    n_dist = n_distinct(x$id_abs)
-    
-    tab = x %>%
-      count(.data$nazwa_zaw) %>%
-      mutate(odsetek = .data$n / n_dist)
-    
-    tab %>%
-      as.list() %>%
-      return()
+    return(list())
   }
 }
 #' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
@@ -936,7 +941,7 @@ dyscypliny_zawody = function(x, dyscyplina_kont_df, rok, mies = 12) {
             rok %in% c(2020, 2021),
             mies %in% c(1:12))
   
-  if (any(unique(x$typ_szk) %in% c("Technikum", "Liceum ogólnokształcące"))) {
+  if (any(unique(x$typ_szk) %in% c("Technikum"))) {
     
     dyscyplina_kont_df = dyscyplina_kont_df %>%
       select(id_abs, dyscyplina_wiodaca_kont)
