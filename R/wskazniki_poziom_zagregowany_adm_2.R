@@ -331,18 +331,22 @@ Z4_ods_prac_mies = function(x, rok_od, mies_od = 9, rok_do, mies_do = 12, nauka)
     
     nka = n_distinct(ucz$id_abs)
     
-    ucz %>%
-      full_join(ucz_prac, by = "id_abs") %>%
-      mutate(ods_ucz_prac = ifelse(is.na(.data$l_mies_ucz_prac), 0, .data$l_mies_ucz_prac / .data$l_mies_ucz)) %>%
-      summarise(
-        n = nka,
-        srednia = mean(.data$ods_ucz_prac, na.rm = TRUE),
-        med = median(.data$ods_ucz_prac, na.rm = TRUE),
-        p0 = sum(.data$ods_ucz_prac %in% 0) / nka,
-        czesc = sum(.data$ods_ucz_prac > 0 & .data$ods_ucz_prac < 1) / nka,
-        p100 = sum(.data$ods_ucz_prac %in% 1) / nka) %>%
-      as.list() %>%
-      return()
+    if (nrow(ucz) > 0) {
+      ucz %>%
+        full_join(ucz_prac, by = "id_abs") %>%
+        mutate(ods_ucz_prac = ifelse(is.na(.data$l_mies_ucz_prac), 0, .data$l_mies_ucz_prac / .data$l_mies_ucz)) %>%
+        summarise(
+          n = nka,
+          srednia = mean(.data$ods_ucz_prac, na.rm = TRUE),
+          med = median(.data$ods_ucz_prac, na.rm = TRUE),
+          p0 = sum(.data$ods_ucz_prac %in% 0) / nka,
+          czesc = sum(.data$ods_ucz_prac > 0 & .data$ods_ucz_prac < 1) / nka,
+          p100 = sum(.data$ods_ucz_prac %in% 1) / nka) %>%
+        as.list() %>%
+        return()
+    } else {
+      return(list())
+    }
   } else {
     nucz = x %>%
       filter(.data$nauka2 %in% 0) %>%
@@ -355,18 +359,22 @@ Z4_ods_prac_mies = function(x, rok_od, mies_od = 9, rok_do, mies_do = 12, nauka)
     
     nka = n_distinct(nucz$id_abs)
     
-    nucz %>%
-      full_join(nucz_prac, by = "id_abs") %>%
-      mutate(ods_nucz_prac = ifelse(is.na(.data$l_mies_nucz_prac), 0, round(.data$l_mies_nucz_prac / .data$l_mies_nucz, 2))) %>%
-      summarise(
-        n = n_distinct(.data$id_abs),
-        srednia = mean(.data$ods_nucz_prac, na.rm = TRUE),
-        med = median(.data$ods_nucz_prac, na.rm = TRUE),
-        p0 = sum(.data$ods_nucz_prac %in% 0) / nka,
-        czesc = sum(.data$ods_nucz_prac > 0 & .data$ods_nucz_prac < 1) / nka,
-        p100 = sum(.data$ods_nucz_prac %in% 1) / nka) %>%
-      as.list() %>%
-      return()
+    if (nrow(nucz) > 0) {
+      nucz %>%
+        full_join(nucz_prac, by = "id_abs") %>%
+        mutate(ods_nucz_prac = ifelse(is.na(.data$l_mies_nucz_prac), 0, round(.data$l_mies_nucz_prac / .data$l_mies_nucz, 2))) %>%
+        summarise(
+          n = n_distinct(.data$id_abs),
+          srednia = mean(.data$ods_nucz_prac, na.rm = TRUE),
+          med = median(.data$ods_nucz_prac, na.rm = TRUE),
+          p0 = sum(.data$ods_nucz_prac %in% 0) / nka,
+          czesc = sum(.data$ods_nucz_prac > 0 & .data$ods_nucz_prac < 1) / nka,
+          p100 = sum(.data$ods_nucz_prac %in% 1) / nka) %>%
+        as.list() %>%
+        return()
+    } else {
+      return(list())
+    }
   }
 }
 #' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
