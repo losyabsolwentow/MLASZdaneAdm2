@@ -10,8 +10,8 @@ okres_na_date = function(x) {
   stopifnot(is.numeric(x))
   
   mies_rok = 
-    list(mies = (x %% 12) + 1,
-         rok = ceiling(x / 12) - 1)
+    list(mies = x - 12L*(floor((x - 1) / 12)),
+         rok = floor((x - 1) / 12))
   
   return(mies_rok)
 }
@@ -26,7 +26,7 @@ okres_na_date = function(x) {
 #' @export
 okres_na_mies = function(x) {
   stopifnot(is.numeric(x))
-  return((x %% 12) + 1)
+  return(x - 12L*(floor((x - 1) / 12)))
 }
 #' @title Funkcje robocze dla obliczania wskaźników dla 2. edycji monitoringu -
 #' dane administracyjne
@@ -37,9 +37,9 @@ okres_na_mies = function(x) {
 #' pośredniej), która ma być przeliczona na wartość liczbową będącą rokiem
 #' @return numeric
 #' @export
-okres_na_rok = function(x, unnamed = FALSE) {
+okres_na_rok = function(x) {
   stopifnot(is.numeric(x))
-  return(ceiling(x / 12) - 1)
+  return(floor((x - 1) / 12))
 }
 #' @title Funkcje robocze dla obliczania wskaźników dla 2. edycji monitoringu -
 #' dane administracyjne
@@ -55,5 +55,5 @@ data_na_okres = function(mies, rok) {
             mies %in% 1:12,
             is.numeric(rok))
   
-  return(12 * (rok - 1) + mies)
+  return((12 * rok) + mies)
 }

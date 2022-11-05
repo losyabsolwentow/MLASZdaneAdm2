@@ -85,7 +85,7 @@ utworz_grupowanie_odn_teryt = function(x, zmGrupujace, ...,
   stopifnot(all(!is.na(x$podregion)))
   x <- x %>%
     select(all_of(c(idAbs, zmGrupujace, zmTerytPow, "podregion")), ...) %>%
-    mutate(teryt_woj = 10000 * floor(.data[[zmTerytPow]] / 10000))
+    mutate(teryt_woj = floor(.data[[zmTerytPow]] / 10000))
   nazwyZastrzezone <- c("grupa", "odniesienie",
                         "nOdnPow", "mOdnPow", "nOdnPodreg", "mOdnPodreg",
                         "nOdnWoj", "mOdnWoj")
