@@ -5,7 +5,7 @@
 \title{Funkcje robocze dla obliczania wskaźników dla 2. edycji monitoringu -
 dane administracyjne}
 \usage{
-okres_na_rok(x, unnamed = FALSE)
+okres_na_rok(x)
 }
 \arguments{
 \item{x}{data wyrażona jako liczbą miesięcy, które minęły od roku 0, czyli od

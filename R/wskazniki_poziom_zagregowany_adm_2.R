@@ -141,27 +141,31 @@ zawody_S3 = function(x, rok_od, mies_od, rok_do, mies_do, dup = NULL) {
             mies_do %in% c(1:12),
             is.vector(dup) | is.null(dup) | is.integer(dup))
   
-  tab = x %>%
-    group_by(.data$nazwa_zaw) %>%
-    S3_mies(rok_od, mies_od, rok_do, mies_do, dup) %>%
-    as_tibble() %>%
-    ungroup() %>% 
-    arrange(desc(n)) %>%
-    filter(n >= 10)
-  
-  tot = x %>%
-    filter(.data$nazwa_zaw %in% unique(tab$nazwa_zaw)) %>%
-    S3_mies(rok_od, mies_od, rok_do, mies_do, dup) %>%
-    as_tibble() %>%
-    mutate(nazwa_zaw = "Ogółem") %>%
-    select(nazwa_zaw, n:neet)
-  
-  if (nrow(tab) %in% 0) {
-    return(list())
+  if (!any(unique(x$typ_szk) %in% "^Liceum")) {
+    tab = x %>%
+      group_by(.data$nazwa_zaw) %>%
+      S3_mies(rok_od, mies_od, rok_do, mies_do, dup) %>%
+      as_tibble() %>%
+      ungroup() %>% 
+      arrange(desc(n)) %>%
+      filter(n >= 10)
+    
+    tot = x %>%
+      filter(.data$nazwa_zaw %in% unique(tab$nazwa_zaw)) %>%
+      S3_mies(rok_od, mies_od, rok_do, mies_do, dup) %>%
+      as_tibble() %>%
+      mutate(nazwa_zaw = "Ogółem") %>%
+      select(nazwa_zaw, n:neet)
+    
+    if (nrow(tab) %in% 0) {
+      return(list())
+    } else {
+      rbind(tab, tot) %>%
+        as.list() %>%
+        return()
+    }
   } else {
-    rbind(tab, tot) %>%
-      as.list() %>%
-      return()
+    return(list())
   }
 }
 #' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
@@ -271,7 +275,8 @@ liczebnosc_branze_kont = function(x, branza_kont_df, rok, mies = 12) {
       filter(.data$okres %in% data_na_okres(mies, rok)) %>% 
       left_join(branza_kont_df %>% 
                   select(id_abs, rok_abs, branza_kont)) %>%
-      filter(.data$nauka_bs2st %in% 1,
+      filter(
+        # .data$nauka_bs2st %in% 1,
              !(is.na(.data$branza_kont)))
     
     n_dist = n_distinct(x$id_abs)
@@ -279,7 +284,7 @@ liczebnosc_branze_kont = function(x, branza_kont_df, rok, mies = 12) {
     tab = x %>%
       count(.data$branza_kont) %>%
       mutate(odsetek = .data$n / n_dist) %>%
-      filter(n >= 10) %>% 
+      filter(n >= 10) %>%
       slice_max(n = 10, order_by = .data$n)
     if (nrow(tab) %in% 0) {
       return(list())
@@ -594,56 +599,60 @@ W3_sr_doch_uop = function(x, rok, od = 9, do = 12, nauka) {
   x = x %>%
     filter(.data$okres %in% seq(l_od, l_do, by = 1))
   
-  if (nauka) {
-    x %>%
-      filter((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & !is.na(.data$wynagrodzenie_uop) & !is.na(.data$powiat_sr_wynagrodzenie),
-             .data$wynagrodzenie_uop > 0,
-             .data$powiat_sr_wynagrodzenie > 0) %>%
-      group_by(.data$id_abs, .data$okres) %>%
-      summarise(
-        rel_sred_ind_mies = .data$wynagrodzenie_uop / .data$powiat_sr_wynagrodzenie
-      ) %>%
-      ungroup() %>%
-      group_by(.data$id_abs) %>%
-      summarise(
-        rel_sred_ind = mean(.data$rel_sred_ind_mies, na.rm = TRUE)
-      ) %>%
-      ungroup() %>%
-      summarise(
-        n = n_distinct(.data$id_abs),
-        sred = round(mean(.data$rel_sred_ind), 2),
-        q5 = unname(round(quantile(.data$rel_sred_ind, 0.05), 2)),
-        q25 = unname(round(quantile(.data$rel_sred_ind, 0.25), 2)),
-        med = unname(round(quantile(.data$rel_sred_ind, 0.5), 2)),
-        q75 = unname(round(quantile(.data$rel_sred_ind, 0.75), 2)),
-        q95 = unname(round(quantile(.data$rel_sred_ind, 0.95), 2))) %>%
-      as.list() %>%
-      return()
+  if (nrow(x) > 0) {
+    if (nauka) {
+      x %>%
+        filter((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & !is.na(.data$wynagrodzenie_uop) & !is.na(.data$powiat_sr_wynagrodzenie),
+               .data$wynagrodzenie_uop > 0,
+               .data$powiat_sr_wynagrodzenie > 0) %>%
+        group_by(.data$id_abs, .data$okres) %>%
+        summarise(
+          rel_sred_ind_mies = .data$wynagrodzenie_uop / .data$powiat_sr_wynagrodzenie
+        ) %>%
+        ungroup() %>%
+        group_by(.data$id_abs) %>%
+        summarise(
+          rel_sred_ind = mean(.data$rel_sred_ind_mies, na.rm = TRUE)
+        ) %>%
+        ungroup() %>%
+        summarise(
+          n = n_distinct(.data$id_abs),
+          sred = round(mean(.data$rel_sred_ind), 2),
+          q5 = unname(round(quantile(.data$rel_sred_ind, 0.05), 2)),
+          q25 = unname(round(quantile(.data$rel_sred_ind, 0.25), 2)),
+          med = unname(round(quantile(.data$rel_sred_ind, 0.5), 2)),
+          q75 = unname(round(quantile(.data$rel_sred_ind, 0.75), 2)),
+          q95 = unname(round(quantile(.data$rel_sred_ind, 0.95), 2))) %>%
+        as.list() %>%
+        return()
+    } else {
+      x %>%
+        filter(.data$nauka2 %in% 0 & !is.na(.data$wynagrodzenie_uop) & !is.na(.data$powiat_sr_wynagrodzenie),
+               .data$wynagrodzenie_uop > 0,
+               .data$powiat_sr_wynagrodzenie > 0) %>%
+        group_by(.data$id_abs, .data$okres) %>%
+        summarise(
+          rel_sred_ind_mies = .data$wynagrodzenie_uop / .data$powiat_sr_wynagrodzenie
+        ) %>%
+        ungroup() %>%
+        group_by(.data$id_abs) %>%
+        summarise(
+          rel_sred_ind = mean(.data$rel_sred_ind_mies, na.rm = TRUE)
+        ) %>%
+        ungroup() %>%
+        summarise(
+          n = n_distinct(.data$id_abs),
+          sred = round(mean(.data$rel_sred_ind), 2),
+          q5 = unname(round(quantile(.data$rel_sred_ind, 0.05), 2)),
+          q25 = unname(round(quantile(.data$rel_sred_ind, 0.25), 2)),
+          med = unname(round(quantile(.data$rel_sred_ind, 0.5), 2)),
+          q75 = unname(round(quantile(.data$rel_sred_ind, 0.75), 2)),
+          q95 = unname(round(quantile(.data$rel_sred_ind, 0.95), 2))) %>%
+        as.list() %>%
+        return()
+    }
   } else {
-    x %>%
-      filter(.data$nauka2 %in% 0 & !is.na(.data$wynagrodzenie_uop) & !is.na(.data$powiat_sr_wynagrodzenie),
-             .data$wynagrodzenie_uop > 0,
-             .data$powiat_sr_wynagrodzenie > 0) %>%
-      group_by(.data$id_abs, .data$okres) %>%
-      summarise(
-        rel_sred_ind_mies = .data$wynagrodzenie_uop / .data$powiat_sr_wynagrodzenie
-      ) %>%
-      ungroup() %>%
-      group_by(.data$id_abs) %>%
-      summarise(
-        rel_sred_ind = mean(.data$rel_sred_ind_mies, na.rm = TRUE)
-      ) %>%
-      ungroup() %>%
-      summarise(
-        n = n_distinct(.data$id_abs),
-        sred = round(mean(.data$rel_sred_ind), 2),
-        q5 = unname(round(quantile(.data$rel_sred_ind, 0.05), 2)),
-        q25 = unname(round(quantile(.data$rel_sred_ind, 0.25), 2)),
-        med = unname(round(quantile(.data$rel_sred_ind, 0.5), 2)),
-        q75 = unname(round(quantile(.data$rel_sred_ind, 0.75), 2)),
-        q95 = unname(round(quantile(.data$rel_sred_ind, 0.95), 2))) %>%
-      as.list() %>%
-      return()
+    return(list())
   }
 }
 #' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
@@ -941,7 +950,7 @@ dyscypliny_zawody = function(x, dyscyplina_kont_df, rok, mies = 12) {
             rok %in% c(2020, 2021),
             mies %in% c(1:12))
   
-  if (any(unique(x$typ_szk) %in% c("Technikum"))) {
+  if (any(unique(x$typ_szk) %in% c("Technikum", "Szkoła policealna"))) {
     
     dyscyplina_kont_df = dyscyplina_kont_df %>%
       select(id_abs, dyscyplina_wiodaca_kont)
@@ -964,6 +973,73 @@ dyscypliny_zawody = function(x, dyscyplina_kont_df, rok, mies = 12) {
       tab = x %>%
         filter(.data$nazwa_zaw %in% unique(nki$nazwa_zaw)) %>% 
         group_by(.data$dyscyplina_wiodaca_kont) %>%
+        count(.data$nazwa_zaw) %>% 
+        ungroup()
+      if (nrow(tab) %in% 0) {
+        return(list())
+      } else {
+        tab %>%
+          pivot_wider(names_from = nazwa_zaw, values_from = n, values_fill = 0) %>% 
+          rowwise() %>% 
+          mutate(across(2:ncol(.),
+                        ~sum(.) / nki$n[nki$nazwa_zaw %in% cur_column()])) %>% 
+          ungroup() %>% 
+          as.list() %>%
+          return()
+      }
+    }
+  } else {
+    return(list())
+  }
+}
+#' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
+#' @description Funkcja licząca rozkład liczebności absolwentów kontynuujących
+#' naukę na studiach w podziale na dyscypliny i zawody - wynik działania funkcji
+#' jest wsadem do tabeli krzyżowej dyscypliny przez zawody w raporcie. Funkcja
+#' liczy wskaźnik tylko dla absolwentów techników i liceów ogólnokształcących.
+#' Wskaźnik liczony jest tylko dla zawodów, w których uczyło się więcej niż 10
+#' absolwentów (n>=10).
+#' @param x ramka danych pośrednich P3
+#' @param branza_kont_df ramka danych zawierająca informację o kontynuowaniu
+#' kształcenia w danej dyscyplinie (tabela danych pośrednich P2 lub zawierająca
+#' analogiczne informacje oraz te same nazwy kolumn co tabela P2)
+#' @param rok rok lub zakres lat osiągnięcia statusu absolwenta
+#' @param mies miesiąc, dla którego ma być policzony wskaźnik - domyślnie
+#' grudzień
+#' @return lista
+#' @importFrom dplyr %>% filter .data select left_join count mutate group_by
+#' ungroup rowwise across cur_column
+#' @importFrom tidyr pivot_wider
+#' @export
+branze_zawody = function(x, branza_kont_df, rok, mies = 12) {
+  stopifnot(is.data.frame(x),
+            is.data.frame(branza_kont_df),
+            rok %in% c(2020, 2021),
+            mies %in% c(1:12))
+  
+  if (any(unique(x$typ_szk) %in% c("Technikum"))) {
+    
+    branza_kont_df = branza_kont_df %>%
+      select(id_abs, branza_kont)
+    
+    x = x %>%
+      filter(.data$okres %in% data_na_okres(mies, rok)) %>%
+      left_join(branza_kont_df,
+                by = c("id_abs")) %>%
+      # filter(.data$nauka_bs2st %in% 1) %>%
+      filter(!(is.na(.data$branza_kont)))
+    
+    if (nrow(x) %in% 0) {
+      return(list())
+    } else {
+      nki = x %>% 
+        count(.data$nazwa_zaw) %>% 
+        filter(n >= 10) %>% 
+        as.list()
+      
+      tab = x %>%
+        filter(.data$nazwa_zaw %in% unique(nki$nazwa_zaw)) %>% 
+        group_by(.data$branza_kont) %>%
         count(.data$nazwa_zaw) %>% 
         ungroup()
       if (nrow(tab) %in% 0) {
