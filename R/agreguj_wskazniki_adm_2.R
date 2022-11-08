@@ -40,7 +40,8 @@
 #'  \item{\code{\link{licz_zawody}},}
 #'  \item{\code{\link{liczebnosc_dyscypliny}},}
 #'  \item{\code{\link{liczebnosc_dziedziny}},}
-#'  \item{\code{\link{dyscypliny_zawody}}}
+#'  \item{\code{\link{dyscypliny_zawody}},}
+#'  \item{\code{\link{branze_zawody}}}
 #' }
 #' @export
 #' @importFrom dplyr %>% filter .data left_join
@@ -107,7 +108,8 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, grupy, rok_abso, duplikaty = T
     liczebnosc_branze_kont = liczebnosc_branze_kont(.data, wsk2, rok_abso, 12),
     liczebnosc_dziedziny = liczebnosc_dziedziny(.data, wsk2, rok_abso, 12),
     liczebnosc_dyscypliny = liczebnosc_dyscypliny(.data, wsk2, rok_abso, 12),
-    dyscypliny_zawody = dyscypliny_zawody(.data, wsk2, rok_abso, 12)
+    dyscypliny_zawody = dyscypliny_zawody(.data, wsk2, rok_abso, 12),
+    branze_zawody = branze_zawody(.data, wsk2, rok_abso, 12)
   )
   
   wskazniki_4$grupy = wskazniki_4$grupy %>%
