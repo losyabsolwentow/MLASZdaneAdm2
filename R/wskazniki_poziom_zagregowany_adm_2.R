@@ -147,8 +147,7 @@ zawody_S3 = function(x, rok_od, mies_od, rok_do, mies_do, dup = NULL) {
       S3_mies(rok_od, mies_od, rok_do, mies_do, dup) %>%
       as_tibble() %>%
       ungroup() %>% 
-      arrange(desc(n)) %>%
-      filter(n >= 10)
+      arrange(desc(n))
     
     tot = x %>%
       filter(.data$nazwa_zaw %in% unique(tab$nazwa_zaw)) %>%
