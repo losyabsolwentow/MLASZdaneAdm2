@@ -474,31 +474,54 @@ Z8_formy_prac_mies = function(x, rok, mies = 12, nauka) {
 #' @param x ramka danych pośrednich P3
 #' @param rok rok lub zakres lat osiągnięcia statusu absolwenta
 #' @param mies miesiąc, dla którego ma być policzony wskaźnik
+#' @param nauka wartość TRUE/FALSE określająca czy status ma być liczony dla
+#' absolwentów uczących się czy nie uczących się
 #' @return lista
 #' @importFrom dplyr %>% filter summarise n_distinct
 #' @export
-Z9_kont_mlod = function(x, rok, mies = 9) {
+Z9_kont_mlod = function(x, rok, mies = 9, nauka) {
   stopifnot(is.data.frame(x),
             rok %in% c(2020, 2021),
-            mies %in% c(1:12))
+            mies %in% c(1:12),
+            is.logical(nauka))
   
   if (any(unique(x$typ_szk) %in% "Branżowa szkoła I stopnia")) {
     x = x %>%
       filter(.data$okres %in% data_na_okres(mies, rok),
              !is.na(.data$kont_mlodoc_prac))
     
-    nka = n_distinct(x$id_abs)
-    
-    x %>%
-      summarise(
-        n = nka,
-        nieucz_niekontuop = sum(.data$kont_mlodoc_prac %in% 1) / nka,
-        nieucz_kont_uop = sum(.data$kont_mlodoc_prac %in% 2) / nka,
-        nieucz_kont_inne = sum(.data$kont_mlodoc_prac %in% 3) / nka,
-        ucz_niekontuop = sum(.data$kont_mlodoc_prac %in% 4) / nka,
-        ucz_kontuop = sum(.data$kont_mlodoc_prac %in% 5) / nka) %>%
-      as.list() %>%
-      return()
+    if (nrow(x) %in% 0) {
+      return(list())
+    } else {
+      if (nauka) {
+        nka = x %>%
+          filter((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% c(1:7)) %>% 
+          pull(.data$id_abs) %>% 
+          n_distinct()
+        
+        x %>%
+          summarise(
+            n = nka,
+            niekontuop = sum(.data$kont_mlodoc_prac %in% 4) / nka,
+            kontuop = sum(.data$kont_mlodoc_prac %in% 5) / nka) %>%
+          as.list() %>%
+          return()
+      } else {
+        nka = x %>% 
+          filter(.data$nauka2 %in% 0 & .data$praca %in% c(1:7)) %>% 
+          pull(.data$id_abs) %>% 
+          n_distinct()
+        
+        x %>%
+          summarise(
+            n = nka,
+            niekontuop = sum(.data$kont_mlodoc_prac %in% 1) / nka,
+            kont_uop = sum(.data$kont_mlodoc_prac %in% 2) / nka,
+            kont_inne = sum(.data$kont_mlodoc_prac %in% 3) / nka) %>%
+          as.list() %>%
+          return()
+      }
+    }
   } else {
     return(list())
   }
@@ -1056,5 +1079,32 @@ branze_zawody = function(x, branza_kont_df, rok, mies = 12) {
     }
   } else {
     return(list())
+  }
+}
+#' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
+#' @description Funkcja licząca rozkład liczebności w zawodach na potrzeby
+#' raportu wojewódzko-branżowego.
+#' @param x ramka danych pośrednich P4
+#' @return lista
+#' @importFrom dplyr %>% filter .data count mutate
+#' @export
+liczebnosc_zawody = function(x) {
+  stopifnot(is.data.frame(x))
+  
+  x = x %>%
+    filter(!(is.na(.data$nazwa_zaw)))
+  
+  if (nrow(x) %in% 0) {
+    return(list())
+  } else {
+    n_dist = n_distinct(x$id_abs)
+    
+    tab = x %>%
+      count(.data$nazwa_zaw) %>%
+      mutate(odsetek = .data$n / n_dist)
+    
+    tab %>%
+      as.list() %>%
+      return()
   }
 }

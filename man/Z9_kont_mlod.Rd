@@ -4,7 +4,7 @@
 \alias{Z9_kont_mlod}
 \title{Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne}
 \usage{
-Z9_kont_mlod(x, rok, mies = 9)
+Z9_kont_mlod(x, rok, mies = 9, nauka)
 }
 \arguments{
 \item{x}{ramka danych pośrednich P3}
@@ -12,6 +12,9 @@ Z9_kont_mlod(x, rok, mies = 9)
 \item{rok}{rok lub zakres lat osiągnięcia statusu absolwenta}
 
 \item{mies}{miesiąc, dla którego ma być policzony wskaźnik}
+
+\item{nauka}{wartość TRUE/FALSE określająca czy status ma być liczony dla
+absolwentów uczących się czy nie uczących się}
 }
 \value{
 lista
