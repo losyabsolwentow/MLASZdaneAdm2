@@ -491,7 +491,7 @@ Z9_kont_mlod = function(x, rok, mies = 9, nauka) {
              !is.na(.data$kont_mlodoc_prac))
     
     if (nrow(x) %in% 0) {
-      return(list())
+      return(list(n = 0))
     } else {
       if (nauka) {
         nka = x %>%
@@ -523,7 +523,7 @@ Z9_kont_mlod = function(x, rok, mies = 9, nauka) {
       }
     }
   } else {
-    return(list())
+    return(list(n = 0))
   }
 }
 #' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
