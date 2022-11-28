@@ -494,32 +494,42 @@ Z9_kont_mlod = function(x, rok, mies = 9, nauka) {
       return(list(n = 0))
     } else {
       if (nauka) {
-        nka = x %>%
-          filter((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% c(1:7)) %>% 
-          pull(.data$id_abs) %>% 
-          n_distinct()
-        
-        x %>%
-          summarise(
-            n = nka,
-            niekontuop = sum(.data$kont_mlodoc_prac %in% 4) / nka,
-            kontuop = sum(.data$kont_mlodoc_prac %in% 5) / nka) %>%
-          as.list() %>%
-          return()
+        x = x %>% 
+          filter((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% c(1:7))
+        if (nrow(x) %in% 0) {
+          return(list(n = 0))
+        } else {
+          nka = x %>%
+            pull(.data$id_abs) %>% 
+            n_distinct()
+          
+          x %>%
+            summarise(
+              n = nka,
+              niekontuop = sum(.data$kont_mlodoc_prac %in% 4) / nka,
+              kontuop = sum(.data$kont_mlodoc_prac %in% 5) / nka) %>%
+            as.list() %>%
+            return()
+        }
       } else {
-        nka = x %>% 
-          filter(.data$nauka2 %in% 0 & .data$praca %in% c(1:7)) %>% 
-          pull(.data$id_abs) %>% 
-          n_distinct()
-        
-        x %>%
-          summarise(
-            n = nka,
-            niekontuop = sum(.data$kont_mlodoc_prac %in% 1) / nka,
-            kont_uop = sum(.data$kont_mlodoc_prac %in% 2) / nka,
-            kont_inne = sum(.data$kont_mlodoc_prac %in% 3) / nka) %>%
-          as.list() %>%
-          return()
+        x = x %>% 
+          filter(.data$nauka2 %in% 0 & .data$praca %in% c(1:7))
+        if (nrow(x) %in% 0) {
+          return(list(n = 0))
+        } else {
+          nka = x %>% 
+            pull(.data$id_abs) %>% 
+            n_distinct()
+          
+          x %>%
+            summarise(
+              n = nka,
+              niekontuop = sum(.data$kont_mlodoc_prac %in% 1) / nka,
+              kont_uop = sum(.data$kont_mlodoc_prac %in% 2) / nka,
+              kont_inne = sum(.data$kont_mlodoc_prac %in% 3) / nka) %>%
+            as.list() %>%
+            return()
+        }
       }
     }
   } else {
