@@ -283,8 +283,7 @@ liczebnosc_branze_kont = function(x, branza_kont_df, rok, mies = 12) {
     tab = x %>%
       count(.data$branza_kont) %>%
       mutate(odsetek = .data$n / n_dist) %>%
-      filter(n >= 10) %>%
-      slice_max(n = 10, order_by = .data$n)
+      slice_max(n = 10, order_by = .data$n, with_ties = FALSE)
     if (nrow(tab) %in% 0) {
       return(list(n = 0))
     } else {
@@ -1028,9 +1027,8 @@ dyscypliny_zawody = function(x, dyscyplina_kont_df, rok, mies = 12) {
 #' @description Funkcja licząca rozkład liczebności absolwentów kontynuujących
 #' naukę na studiach w podziale na dyscypliny i zawody - wynik działania funkcji
 #' jest wsadem do tabeli krzyżowej dyscypliny przez zawody w raporcie. Funkcja
-#' liczy wskaźnik tylko dla absolwentów techników i liceów ogólnokształcących.
-#' Wskaźnik liczony jest tylko dla zawodów, w których uczyło się więcej niż 10
-#' absolwentów (n>=10).
+#' liczy wskaźnik tylko dla absolwentów techników i branżowych szkół I stopnia.
+#' Wskaźnik liczony jest dla wszystkich zawodów, niezależnie od liczebności.
 #' @param x ramka danych pośrednich P3
 #' @param branza_kont_df ramka danych zawierająca informację o kontynuowaniu
 #' kształcenia w danej dyscyplinie (tabela danych pośrednich P2 lub zawierająca
@@ -1049,7 +1047,7 @@ branze_zawody = function(x, branza_kont_df, rok, mies = 12) {
             rok %in% c(2020, 2021),
             mies %in% c(1:12))
   
-  if (any(unique(x$typ_szk) %in% c("Technikum"))) {
+  if (any(unique(x$typ_szk) %in% c("Technikum", "Branżowa szkoła I stopnia"))) {
     
     branza_kont_df = branza_kont_df %>%
       select(id_abs, branza_kont)
@@ -1058,7 +1056,6 @@ branze_zawody = function(x, branza_kont_df, rok, mies = 12) {
       filter(.data$okres %in% data_na_okres(mies, rok)) %>%
       left_join(branza_kont_df,
                 by = c("id_abs")) %>%
-      # filter(.data$nauka_bs2st %in% 1) %>%
       filter(!(is.na(.data$branza_kont)))
     
     if (nrow(x) %in% 0) {
@@ -1066,7 +1063,6 @@ branze_zawody = function(x, branza_kont_df, rok, mies = 12) {
     } else {
       nki = x %>% 
         count(.data$nazwa_zaw) %>% 
-        filter(n >= 10) %>% 
         as.list()
       
       tab = x %>%
