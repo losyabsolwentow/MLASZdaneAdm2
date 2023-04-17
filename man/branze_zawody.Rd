@@ -25,7 +25,6 @@ lista
 Funkcja licząca rozkład liczebności absolwentów kontynuujących
 naukę na studiach w podziale na dyscypliny i zawody - wynik działania funkcji
 jest wsadem do tabeli krzyżowej dyscypliny przez zawody w raporcie. Funkcja
-liczy wskaźnik tylko dla absolwentów techników i liceów ogólnokształcących.
-Wskaźnik liczony jest tylko dla zawodów, w których uczyło się więcej niż 10
-absolwentów (n>=10).
+liczy wskaźnik tylko dla absolwentów techników i branżowych szkół I stopnia.
+Wskaźnik liczony jest dla wszystkich zawodów, niezależnie od liczebności.
 }
