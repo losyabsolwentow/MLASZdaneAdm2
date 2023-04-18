@@ -3,22 +3,33 @@
 #' raport.
 #' @param x ramka danych pośrednich P4
 #' @return tekst
+#' @importFrom dplyr %>% pull .data
 #' @export
 dane_szkoly = function(x) {
   stopifnot(is.data.frame(x))
   
   list(
-    nazwa = unique(x$nazwa_szk),
-    adres = unique(x$adres_szk)
+    nazwa = x %>% 
+      pull(.data$nazwa_szk) %>% 
+      unique(),
+    adres = x %>% 
+      pull(.data$adres_szk) %>% 
+      unique()
   ) %>%
     return()
+  
+  # list(
+  #   nazwa = unique(.data$nazwa_szk),
+  #   adres = unique(.data$adres_szk)
+  # ) %>%
+  #   return()
 }
 #' @title Obliczanie wskaźników dla 2. edycji monitoringu - dane administracyjne
 #' @description Funkcja oblicza wskaźnik opisujący liczbę absolwentów na danym
 #' poziomie agregacji, którzy zostali objęci monitoringiem.
 #' @param x ramka danych pośrednich P4
 #' @return liczba
-#' @importFrom dplyr select .data distinct
+#' @importFrom dplyr %>% select .data distinct
 #' @export
 l_abs = function(x) {
   x %>%
