@@ -5,7 +5,14 @@
 \title{Obliczanie wskaznikow na poziomie zagregowanym dla 2. edycji
 monitoringu na danych administracyjnych}
 \usage{
-agreguj_1rokpo_adm_2(wsk2, wsk3, wsk4, grupy, rok_abso, duplikaty = TRUE)
+agreguj_1rokpo_adm_2(
+  wsk2,
+  wsk3,
+  wsk4,
+  podzial_grupy,
+  rok_abso,
+  duplikaty = TRUE
+)
 }
 \arguments{
 \item{wsk2}{ramka danych z tabeli pośredniej nr 2 (P2) z wynikami z 2.
@@ -17,7 +24,7 @@ rundy monitoringu na danych administracyjnych}
 \item{wsk4}{ramka danych z tabeli pośredniej nr 4 (P4) z wynikami z 2.
 rundy monitoringu na danych administracyjnych}
 
-\item{grupy}{ramka danych zawierająca definicje podziałów na grupy -
+\item{podzial_grupy}{ramka danych zawierająca definicje podziałów na grupy -
 np. zwrócona przez funkcję \code{\link{utworz_grupowanie_ze_zmiennej}}}
 
 \item{rok_abso}{rok, w którym grupa absolwentów uzyskała status absolwenta.

@@ -8,7 +8,7 @@
 #' rundy monitoringu na danych administracyjnych
 #' @param wsk4 ramka danych z tabeli pośredniej nr 4 (P4) z wynikami z 2.
 #' rundy monitoringu na danych administracyjnych
-#' @param grupy ramka danych zawierająca definicje podziałów na grupy -
+#' @param podzial_grupy ramka danych zawierająca definicje podziałów na grupy -
 #' np. zwrócona przez funkcję \code{\link{utworz_grupowanie_ze_zmiennej}}
 #' @param rok_abso rok, w którym grupa absolwentów uzyskała status absolwenta.
 #' Może to być więcej niż 1 wartość.
@@ -45,11 +45,11 @@
 #' }
 #' @export
 #' @importFrom dplyr %>% filter .data left_join
-agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, grupy, rok_abso, duplikaty = TRUE) {
+agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, podzial_grupy, rok_abso, duplikaty = TRUE) {
   stopifnot(is.data.frame(wsk2),
             is.data.frame(wsk3),
             is.data.frame(wsk4),
-            is.data.frame(grupy),
+            is.data.frame(podzial_grupy),
             rok_abso %in% c(2020, 2021) & length(rok_abso) %in% 1,
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj", "branza") %in% names(wsk2),
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj", "branza") %in% names(wsk3),
@@ -73,7 +73,7 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, grupy, rok_abso, duplikaty = T
   }
   
   wskazniki_4 = agreguj_wskazniki(
-    wsk4, grupy,
+    wsk4, podzial_grupy,
     dane_szkoly = dane_szkoly(.data),
     l_abs = l_abs(.data),
     l_kobiet = l_kobiet(.data),
@@ -81,7 +81,7 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, grupy, rok_abso, duplikaty = T
     liczebnosc_branze_ucz = liczebnosc_branze_ucz(.data))
   
   wskazniki_3 = agreguj_wskazniki(
-    wsk3, grupy, list("rok_abso" = rok_abso, "wsk2" = wsk2, "dups" = dups),
+    wsk3, podzial_grupy, list("rok_abso" = rok_abso, "wsk2" = wsk2, "dups" = dups),
     S3_01 = S3_mies(.data, min(rok_abso), 1, max(rok_abso), 1, dups),
     S3_02 = S3_mies(.data, min(rok_abso), 2, max(rok_abso), 2, dups),
     S3_03 = S3_mies(.data, min(rok_abso), 3, max(rok_abso), 3, dups),
