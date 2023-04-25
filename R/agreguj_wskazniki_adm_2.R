@@ -131,7 +131,7 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, podzial_grupy, rok_abso, dupli
 #' rundy monitoringu na danych administracyjnych
 #' @param wsk4 ramka danych z tabeli pośredniej nr 4 (P4) z wynikami z 2.
 #' rundy monitoringu na danych administracyjnych
-#' @param grupy ramka danych zawierająca definicje podziałów na grupy -
+#' @param podzial_grupy ramka danych zawierająca definicje podziałów na grupy -
 #' np. zwrócona przez funkcję \code{\link{utworz_grupowanie_ze_zmiennej}}
 #' @param rok_abso rok, w którym grupa absolwentów uzyskała status absolwenta.
 #' Może to być więcej niż 1 wartość.
@@ -159,10 +159,10 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, podzial_grupy, rok_abso, dupli
 #' }
 #' @export
 #' @importFrom dplyr %>% filter .data left_join
-agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = TRUE) {
+agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, podzial_grupy, rok_abso, duplikaty = TRUE) {
   stopifnot(is.data.frame(wsk3),
             is.data.frame(wsk4),
-            is.data.frame(grupy),
+            is.data.frame(podzial_grupy),
             rok_abso %in% c(2020, 2021) & length(rok_abso) %in% 1,
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj") %in% names(wsk3),
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj") %in% names(wsk4),
@@ -183,12 +183,13 @@ agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = T
   }
   
   wskazniki_4 = agreguj_wskazniki(
-    wsk4, grupy,
+    wsk4, podzial_grupy,
     l_abs = l_abs(.data),
     l_kobiet = l_kobiet(.data))
   
   wskazniki_3 = agreguj_wskazniki(
-    wsk3, grupy, list("rok_abso" = rok_abso, "dups" = dups),
+    wskazniki = wsk3, grupy = podzial_grupy,
+    przekazArgumenty = list("rok_abso" = rok_abso, "dups" = dups),
     S3_12 = S3_mies(.data, min(rok_abso), 12, max(rok_abso), 12, dups),
     tab_s3_zaw = zawody_S3(.data, min(rok_abso), 12, max(rok_abso), 12, dups),
     E2_nauka_kontyn = E2_nauka_kontyn(.data, rok_abso, 12),
@@ -203,9 +204,9 @@ agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = T
   )
   
   wskazniki_4$grupy = wskazniki_4$grupy %>%
-    left_join(wskazniki_3$grupy, by = names(grupy))
+    left_join(wskazniki_3$grupy, by = names(podzial_grupy))
   wskazniki_4$grupyOdniesienia = wskazniki_4$grupyOdniesienia %>%
-    left_join(wskazniki_3$grupyOdniesienia, by = names(grupy))
+    left_join(wskazniki_3$grupyOdniesienia, by = names(podzial_grupy))
   
   wskazniki = list(grupy = wskazniki_4$grupy, grupyOdniesienia = wskazniki_4$grupyOdniesienia)
   return(wskazniki)
@@ -219,7 +220,7 @@ agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = T
 #' rundy monitoringu na danych administracyjnych
 #' @param wsk4 ramka danych z tabeli pośredniej nr 4 (P4) z wynikami z 2.
 #' rundy monitoringu na danych administracyjnych
-#' @param grupy ramka danych zawierająca definicje podziałów na grupy -
+#' @param podzial_grupy ramka danych zawierająca definicje podziałów na grupy -
 #' np. zwrócona przez funkcję \code{\link{utworz_grupowanie_ze_zmiennej}}
 #' @param rok_abso rok, w którym grupa absolwentów uzyskała status absolwenta.
 #' Może to być więcej niż 1 wartość.
@@ -240,10 +241,10 @@ agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = T
 #' }
 #' @export
 #' @importFrom dplyr %>% filter .data left_join
-agreguj_szkozaw_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = TRUE) {
+agreguj_szkozaw_1rokpo_adm_2 = function(wsk3, wsk4, podzial_grupy, rok_abso, duplikaty = TRUE) {
   stopifnot(is.data.frame(wsk3),
             is.data.frame(wsk4),
-            is.data.frame(grupy),
+            is.data.frame(podzial_grupy),
             rok_abso %in% c(2020, 2021) & length(rok_abso) %in% 1,
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj") %in% names(wsk3),
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj") %in% names(wsk4),
@@ -264,20 +265,21 @@ agreguj_szkozaw_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty =
   }
   
   wskazniki_4 = agreguj_wskazniki(
-    wsk4, grupy,
+    wsk4, podzial_grupy,
     l_abs = l_abs(.data),
     licz_zawody = licz_zawody(.data))
   
   wskazniki_3 = agreguj_wskazniki(
-    wsk3, grupy, list("rok_abso" = rok_abso, "dups" = dups),
+    wskazniki = wsk3, grupy = podzial_grupy,
+    przekazArgumenty = list("rok_abso" = rok_abso, "dups" = dups),
     S3_12 = S3_mies(.data, min(rok_abso), 12, max(rok_abso), 12, dups),
     tab_s3_zaw = zawody_S3(.data, min(rok_abso), 12, max(rok_abso), 12, dups)
   )
   
   wskazniki_4$grupy = wskazniki_4$grupy %>%
-    left_join(wskazniki_3$grupy, by = names(grupy))
+    left_join(wskazniki_3$grupy, by = names(podzial_grupy))
   wskazniki_4$grupyOdniesienia = wskazniki_4$grupyOdniesienia %>%
-    left_join(wskazniki_3$grupyOdniesienia, by = names(grupy))
+    left_join(wskazniki_3$grupyOdniesienia, by = names(podzial_grupy))
   
   wskazniki = list(grupy = wskazniki_4$grupy, grupyOdniesienia = wskazniki_4$grupyOdniesienia)
   return(wskazniki)
@@ -290,7 +292,7 @@ agreguj_szkozaw_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty =
 #' rundy monitoringu na danych administracyjnych
 #' @param wsk4 ramka danych z tabeli pośredniej nr 4 (P4) z wynikami z 2.
 #' rundy monitoringu na danych administracyjnych
-#' @param grupy ramka danych zawierająca definicje podziałów na grupy -
+#' @param podzial_grupy ramka danych zawierająca definicje podziałów na grupy -
 #' np. zwrócona przez funkcję \code{\link{utworz_grupowanie_ze_zmiennej}}
 #' @param rok_abso rok, w którym grupa absolwentów uzyskała status absolwenta.
 #' Może to być więcej niż 1 wartość.
@@ -328,10 +330,10 @@ agreguj_szkozaw_1rokpo_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty =
 #' }
 #' @export
 #' @importFrom dplyr %>% filter .data left_join
-agreguj_woj_branz_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = TRUE) {
+agreguj_woj_branz_adm_2 = function(wsk3, wsk4, podzial_grupy, rok_abso, duplikaty = TRUE) {
   stopifnot(is.data.frame(wsk3),
             is.data.frame(wsk4),
-            is.data.frame(grupy),
+            is.data.frame(podzial_grupy),
             rok_abso %in% c(2020, 2021) & length(rok_abso) %in% 1,
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj", "branza") %in% names(wsk3),
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj", "branza") %in% names(wsk4),
@@ -352,7 +354,7 @@ agreguj_woj_branz_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = TRUE
   }
   
   wskazniki_4 = agreguj_wskazniki(
-    wsk4, grupy,
+    wsk4, podzial_grupy,
     dane_szkoly = dane_szkoly(.data),
     l_abs = l_abs(.data),
     l_kobiet = l_kobiet(.data),
@@ -361,7 +363,7 @@ agreguj_woj_branz_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = TRUE
     liczebnosc_zawody = liczebnosc_zawody(.data))
   
   wskazniki_3 = agreguj_wskazniki(
-    wsk3, grupy, list("rok_abso" = rok_abso, "dups" = dups),
+    wsk3, podzial_grupy, list("rok_abso" = rok_abso, "dups" = dups),
     S3_01 = S3_mies(.data, min(rok_abso), 1, max(rok_abso), 1, dups),
     S3_02 = S3_mies(.data, min(rok_abso), 2, max(rok_abso), 2, dups),
     S3_03 = S3_mies(.data, min(rok_abso), 3, max(rok_abso), 3, dups),
@@ -383,9 +385,9 @@ agreguj_woj_branz_adm_2 = function(wsk3, wsk4, grupy, rok_abso, duplikaty = TRUE
   )
   
   wskazniki_4$grupy = wskazniki_4$grupy %>%
-    left_join(wskazniki_3$grupy, by = names(grupy))
+    left_join(wskazniki_3$grupy, by = names(podzial_grupy))
   wskazniki_4$grupyOdniesienia = wskazniki_4$grupyOdniesienia %>%
-    left_join(wskazniki_3$grupyOdniesienia, by = names(grupy))
+    left_join(wskazniki_3$grupyOdniesienia, by = names(podzial_grupy))
   
   wskazniki = list(grupy = wskazniki_4$grupy, grupyOdniesienia = wskazniki_4$grupyOdniesienia)
   return(wskazniki)
