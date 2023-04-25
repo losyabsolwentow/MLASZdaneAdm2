@@ -81,7 +81,8 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, podzial_grupy, rok_abso, dupli
     liczebnosc_branze_ucz = liczebnosc_branze_ucz(.data))
   
   wskazniki_3 = agreguj_wskazniki(
-    wsk3, podzial_grupy, list("rok_abso" = rok_abso, "wsk2" = wsk2, "dups" = dups),
+    wskazniki = wsk3, grupy = podzial_grupy,
+    przekazArgumenty = list("rok_abso" = rok_abso, "wsk2" = wsk2, "dups" = dups),
     S3_01 = S3_mies(.data, min(rok_abso), 1, max(rok_abso), 1, dups),
     S3_02 = S3_mies(.data, min(rok_abso), 2, max(rok_abso), 2, dups),
     S3_03 = S3_mies(.data, min(rok_abso), 3, max(rok_abso), 3, dups),
@@ -114,10 +115,10 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, podzial_grupy, rok_abso, dupli
   )
   
   wskazniki_4$grupy = wskazniki_4$grupy %>%
-    left_join(wskazniki_3$grupy, by = names(grupy))
+    left_join(wskazniki_3$grupy, by = names(podzial_grupy))
   wskazniki_4$grupyOdniesienia = wskazniki_4$grupyOdniesienia %>%
-    left_join(wskazniki_3$grupyOdniesienia, by = names(grupy))
-  
+    left_join(wskazniki_3$grupyOdniesienia, by = names(podzial_grupy))
+
   wskazniki = list(grupy = wskazniki_4$grupy, grupyOdniesienia = wskazniki_4$grupyOdniesienia)
   return(wskazniki)
 }
