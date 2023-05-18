@@ -52,9 +52,7 @@ używane do obliczania konkretnych wskaźników zagregowanych:
 \item{\code{\link{E2_nauka_kontyn}},}
 \item{\code{\link{Z4_ods_prac_mies}},}
 \item{\code{\link{Z8_formy_prac_mies}},}
-\item{\code{\link{W3_sr_doch_uop}},}
 \item{\code{\link{B2_ods_bezrob}},}
-\item{\code{\link{N2_ods_biernosc}},}
 \item{\code{\link{licz_zawody}}}
 }
 }

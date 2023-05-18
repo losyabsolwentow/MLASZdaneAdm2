@@ -152,9 +152,7 @@ agreguj_1rokpo_adm_2 = function(wsk2, wsk3, wsk4, podzial_grupy, rok_abso, dupli
 #'  \item{\code{\link{E2_nauka_kontyn}},}
 #'  \item{\code{\link{Z4_ods_prac_mies}},}
 #'  \item{\code{\link{Z8_formy_prac_mies}},}
-#'  \item{\code{\link{W3_sr_doch_uop}},}
 #'  \item{\code{\link{B2_ods_bezrob}},}
-#'  \item{\code{\link{N2_ods_biernosc}},}
 #'  \item{\code{\link{licz_zawody}}}
 #' }
 #' @export
@@ -197,10 +195,7 @@ agreguj_aneks_1rokpo_adm_2 = function(wsk3, wsk4, podzial_grupy, rok_abso, dupli
     Z4_nie_ucz = Z4_ods_prac_mies(.data, min(rok_abso), 9, max(rok_abso), 12, FALSE),
     Z8_formy_ucz = Z8_formy_prac_mies(.data, rok_abso, 12, TRUE),
     Z8_formy_nie_ucz = Z8_formy_prac_mies(.data, rok_abso, 12, FALSE),
-    W3_ucz = W3_sr_doch_uop(.data, rok_abso, 9, 12, TRUE),
-    W3_nie_ucz = W3_sr_doch_uop(.data, rok_abso, 9, 12, FALSE),
-    B2_bezrob = B2_ods_bezrob(.data, rok_abso, 9, 12),
-    N2_biernosc = N2_ods_biernosc(.data, rok_abso, 9, 12)
+    B2_bezrob = B2_ods_bezrob(.data, rok_abso, 9, 12)
   )
   
   wskazniki_4$grupy = wskazniki_4$grupy %>%

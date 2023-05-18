@@ -434,31 +434,37 @@ Z8_formy_prac_mies = function(x, rok, mies = 12, nauka) {
         filter((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% c(1:7)) %>% 
         pull(.data$id_abs) %>% 
         n_distinct()
-      
-      x %>%
-        summarise(
-          n = nka,
-          ucz_uop = sum((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% 1, na.rm = TRUE) / nka,
-          ucz_samoz = sum((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% 2, na.rm = TRUE) / nka,
-          ucz_inna = sum((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% 3, na.rm = TRUE) / nka,
-          ucz_wiecej = sum((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% c(4:7), na.rm = TRUE) / nka) %>% 
-        as.list() %>%
-        return()
+      if (nka %in% 0) {
+        return(list(n = 0, ucz_uop = 0, ucz_samoz = 0, ucz_inna = 0, ucz_wiecej = 0))
+      } else {
+        x %>%
+          summarise(
+            n = nka,
+            ucz_uop = sum((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% 1, na.rm = TRUE) / nka,
+            ucz_samoz = sum((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% 2, na.rm = TRUE) / nka,
+            ucz_inna = sum((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% 3, na.rm = TRUE) / nka,
+            ucz_wiecej = sum((.data$nauka2 %in% 1 | .data$nauka_szk_abs %in% 1) & .data$praca %in% c(4:7), na.rm = TRUE) / nka) %>% 
+          as.list() %>%
+          return()
+      }
     } else {
       nka = x %>% 
         filter(.data$nauka2 %in% 0 & .data$praca %in% c(1:7)) %>% 
         pull(.data$id_abs) %>% 
         n_distinct()
-      
-      x %>%
-        summarise(
-          n = nka,
-          nieucz_uop = sum(.data$nauka2 %in% 0 & .data$praca %in% 1, na.rm = TRUE) / nka,
-          nieucz_samoz = sum(.data$nauka2 %in% 0 & .data$praca %in% 2, na.rm = TRUE) / nka,
-          nieucz_inna = sum(.data$nauka2 %in% 0 & .data$praca %in% 3, na.rm = TRUE) / nka,
-          nieucz_wiecej = sum(.data$nauka2 %in% 0 & .data$praca %in% c(4:7), na.rm = TRUE) / nka) %>% 
-        as.list() %>%
-        return()
+      if (nka %in% 0) {
+        return(list(n = 0, nieucz_uop = 0, nieucz_samoz = 0, nieucz_inna = 0, nieucz_wiecej = 0))
+      } else {
+        x %>%
+          summarise(
+            n = nka,
+            nieucz_uop = sum(.data$nauka2 %in% 0 & .data$praca %in% 1, na.rm = TRUE) / nka,
+            nieucz_samoz = sum(.data$nauka2 %in% 0 & .data$praca %in% 2, na.rm = TRUE) / nka,
+            nieucz_inna = sum(.data$nauka2 %in% 0 & .data$praca %in% 3, na.rm = TRUE) / nka,
+            nieucz_wiecej = sum(.data$nauka2 %in% 0 & .data$praca %in% c(4:7), na.rm = TRUE) / nka) %>% 
+          as.list() %>%
+          return()
+      }
     }
   }
 }
