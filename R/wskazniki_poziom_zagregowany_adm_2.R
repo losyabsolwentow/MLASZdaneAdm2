@@ -94,9 +94,9 @@ l_abs_zrodla = function(x) {
 #' @export
 S3_mies = function(x, rok_od, mies_od, rok_do, mies_do, dup = NULL) {
   stopifnot(is.data.frame(x),
-            rok_od %in% c(2020, 2021),
+            # rok_od %in% c(2020, 2021),
             mies_od %in% c(1:12),
-            rok_do %in% c(2020, 2021),
+            # rok_do %in% c(2020, 2021),
             mies_do %in% c(1:12),
             is.null(dup) | is.vector(dup) | is.integer(dup))
   
@@ -146,9 +146,9 @@ S3_mies = function(x, rok_od, mies_od, rok_do, mies_do, dup = NULL) {
 zawody_S3 = function(x, rok_od, mies_od, rok_do, mies_do, dup = NULL) {
   stopifnot(is.data.frame(x),
             "nazwa_zaw" %in% names(x),
-            rok_od %in% c(2020, 2021),
+            # rok_od %in% c(2020, 2021),
             mies_od %in% c(1:12),
-            rok_do %in% c(2020, 2021),
+            # rok_do %in% c(2020, 2021),
             mies_do %in% c(1:12),
             is.vector(dup) | is.null(dup) | is.integer(dup))
   
@@ -188,7 +188,7 @@ zawody_S3 = function(x, rok_od, mies_od, rok_do, mies_do, dup = NULL) {
 #' @export
 E2_nauka_kontyn = function(x, rok, mies = 12) {
   stopifnot(is.data.frame(x),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             mies %in% c(1:12))
   
   x = x %>%
@@ -277,7 +277,7 @@ liczebnosc_branze_ucz = function(x) {
 liczebnosc_branze_kont = function(x, branza_kont_df, rok, mies = 12) {
   stopifnot(is.data.frame(x),
             is.data.frame(branza_kont_df),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             mies %in% c(1:12))
   
   if (any(unique(x$typ_szk) %in% "Branżowa szkoła I stopnia")) {
@@ -321,8 +321,8 @@ liczebnosc_branze_kont = function(x, branza_kont_df, rok, mies = 12) {
 #' @export
 Z4_ods_prac_mies = function(x, rok_od, mies_od = 9, rok_do, mies_do = 12, nauka) {
   stopifnot(is.data.frame(x),
-            rok_od %in% c(2020, 2021),
-            rok_do %in% c(2020, 2021),
+            # rok_od %in% c(2020, 2021),
+            # rok_do %in% c(2020, 2021),
             mies_od %in% c(1:12),
             mies_do %in% c(1:12),
             is.logical(nauka))
@@ -419,7 +419,7 @@ Z4_ods_prac_mies = function(x, rok_od, mies_od = 9, rok_do, mies_do = 12, nauka)
 #' @export
 Z8_formy_prac_mies = function(x, rok, mies = 12, nauka) {
   stopifnot(is.data.frame(x),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             mies %in% c(1:12),
             is.logical(nauka))
   
@@ -497,7 +497,7 @@ Z8_formy_prac_mies = function(x, rok, mies = 12, nauka) {
 #' @export
 Z9_kont_mlod = function(x, rok, mies = 9, nauka) {
   stopifnot(is.data.frame(x),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             mies %in% c(1:12),
             is.logical(nauka))
   
@@ -569,7 +569,7 @@ Z9_kont_mlod = function(x, rok, mies = 9, nauka) {
 #' @export
 W1_sr_doch = function(x, rok, od = 9, do = 12, nauka) {
   stopifnot(is.data.frame(x),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             od %in% c(1:12),
             do %in% c(1:12),
             is.logical(nauka))
@@ -636,7 +636,7 @@ W1_sr_doch = function(x, rok, od = 9, do = 12, nauka) {
 #' @export
 W3_sr_doch_uop = function(x, rok, od = 9, do = 12, nauka) {
   stopifnot(is.data.frame(x),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             od %in% c(1:12),
             do %in% c(1:12),
             is.logical(nauka))
@@ -718,7 +718,7 @@ W3_sr_doch_uop = function(x, rok, od = 9, do = 12, nauka) {
 #' @export
 B2_ods_bezrob = function(x, rok, od = 9, do = 12) {
   stopifnot(is.data.frame(x),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             od %in% c(1:12),
             do %in% c(1:12))
   
@@ -787,7 +787,7 @@ B2_ods_bezrob = function(x, rok, od = 9, do = 12) {
 #' @export
 N2_ods_biernosc = function(x, rok, od = 9, do = 12) {
   stopifnot(is.data.frame(x),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             od %in% c(1:12),
             do %in% c(1:12))
   
@@ -885,7 +885,7 @@ licz_zawody = function(x) {
 liczebnosc_dziedziny = function(x, dziedzina_kont_df, rok, mies = 12) {
   stopifnot(is.data.frame(x),
             is.data.frame(dziedzina_kont_df),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             mies %in% c(1:12))
   
   if (any(unique(x$typ_szk) %in% c("Technikum", "Liceum ogólnokształcące"))) {
@@ -938,7 +938,7 @@ liczebnosc_dziedziny = function(x, dziedzina_kont_df, rok, mies = 12) {
 liczebnosc_dyscypliny = function(x, dyscyplina_kont_df, rok, mies = 12) {
   stopifnot(is.data.frame(x),
             is.data.frame(dyscyplina_kont_df),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             mies %in% c(1:12))
   
   if (any(unique(x$typ_szk) %in% c("Technikum", "Liceum ogólnokształcące"))) {
@@ -995,7 +995,7 @@ liczebnosc_dyscypliny = function(x, dyscyplina_kont_df, rok, mies = 12) {
 dyscypliny_zawody = function(x, dyscyplina_kont_df, rok, mies = 12) {
   stopifnot(is.data.frame(x),
             is.data.frame(dyscyplina_kont_df),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             mies %in% c(1:12))
   
   if (any(unique(x$typ_szk) %in% c("Technikum", "Szkoła policealna"))) {
@@ -1061,7 +1061,7 @@ dyscypliny_zawody = function(x, dyscyplina_kont_df, rok, mies = 12) {
 branze_zawody = function(x, branza_kont_df, rok, mies = 12) {
   stopifnot(is.data.frame(x),
             is.data.frame(branza_kont_df),
-            rok %in% c(2020, 2021),
+            # rok %in% c(2020, 2021),
             mies %in% c(1:12))
   
   if (any(unique(x$typ_szk) %in% c("Technikum", "Branżowa szkoła I stopnia"))) {
