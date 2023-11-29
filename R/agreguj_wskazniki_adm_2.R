@@ -329,7 +329,7 @@ agreguj_woj_branz_adm_2 = function(wsk3, wsk4, podzial_grupy, rok_abso, duplikat
   stopifnot(is.data.frame(wsk3),
             is.data.frame(wsk4),
             is.data.frame(podzial_grupy),
-            rok_abso %in% c(2020, 2021) & length(rok_abso) %in% 1,
+            length(rok_abso) %in% 1,
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj", "branza") %in% names(wsk3),
             c("id_szk", "id_abs", "rok_abs", "typ_szk", "teryt_woj", "branza") %in% names(wsk4),
             is.logical(duplikaty))
